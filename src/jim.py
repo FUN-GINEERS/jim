@@ -157,7 +157,7 @@ async def on_message(message):
     elif message.content.startswith("&roll"):
         try:
             splitmsg = message.content.split(' ')
-            dice = int(splitmsg[1][1:])
+            dice = int(splitmsg[1][1:] if splitmsg[1][0] == 'd' else splitmsg[1])
             if dice < 1:
                 await client.send_message(message.channel, "You can't roll less than a one sided die!")
             elif dice > 1000:
