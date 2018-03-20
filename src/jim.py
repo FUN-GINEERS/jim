@@ -2,6 +2,7 @@ import discord
 import time
 import datetime
 import pickle
+import random
 
 import config
 
@@ -164,4 +165,60 @@ async def on_message(message):
         else:
             await client.send_message(message.channel, custom_commands[message.server.id][command])
 
+    # Forgive me if this looks awful - Kleiner
+    elif message.content.lower().startswith(name) and message.content[-1] == '?':
+        roll = random.randint(1,20)
+        if roll == 1:
+            await client.send_message(message.channel, "It is certain!")
+        elif roll == 2:
+            await client.send_message(message.channel, "It is decidedly so.")
+        elif roll == 3:
+            await client.send_message(message.channel, "Without a doubt.")
+        elif roll == 4:
+            await client.send_message(message.channel, "Yes, definitely.")
+        elif roll == 5:
+            await client.send_message(message.channel, "You may rely on it.")
+        elif roll == 6:
+            await client.send_message(message.channel, "As I see it, yes.")
+        elif roll == 7:
+            await client.send_message(message.channel, "Most likely.")
+        elif roll == 8:
+            await client.send_message(message.channel, "Outlook good.")
+        elif roll == 9:
+            await client.send_message(message.channel, "Yes.")
+        elif roll == 10:
+            await client.send_message(message.channel, "Signs point to yes.")
+        elif roll == 11:
+            await client.send_message(message.channel, "Reply hazy... try again.")
+        elif roll == 12:
+            await client.send_message(message.channel, "Ask again later.")
+        elif roll == 13:
+            await client.send_message(message.channel, "Better not tell you now.")
+        elif roll == 14:
+            await client.send_message(message.channel, "Cannot predict now.")
+        elif roll == 15:
+            await client.send_message(message.channel, "Concentrate and ask again later.")
+        elif roll == 16:
+            await client.send_message(message.channel, "Don't count on it.")
+        elif roll == 17:
+            await client.send_message(message.channel, "My reply is no.")
+        elif roll == 18:
+            await client.send_message(message.channel, "My sources say no.")
+        elif roll == 19:
+            await client.send_message(message.channel, "Outlook not so good.")
+        elif roll == 20:
+            await client.send_message(message.channel, "Very doubtful.")
+
+    elif message.content.startswith('&roll') and message.content
+        splitmsg = message.content.split(' ')
+        dice = int(splitmsg[1][1:])
+        roll = random.randint(1,dice)
+        if roll == 1:
+            await client.send_message(message.channel, "1 - critical fail!")
+        elif roll == dice:
+            await client.send_message(message.channel, dice " - CRIT!")
+        else:
+            await client.send_message(message.channel, roll "!")
+
+    
 client.run(config.user_token)
