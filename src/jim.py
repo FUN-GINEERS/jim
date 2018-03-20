@@ -150,21 +150,20 @@ async def on_message(message):
     # Kleiner's awful dice rolling script
     elif message.content.startswith("&roll"):
         try:
-            splitmsg = dRoll.split(' ')
+            splitmsg = message.content.split(' ')
             dice = int(splitmsg[1][1:])
             if dice < 1:
-                await client.send_message(message.channel, "You can't less than a one sided die!")
+                await client.send_message(message.channel, "You can't roll less than a one sided die!")
             elif dice > 1000:
                 await client.send_message(message.channel, "That's too many sides for one die.")
             else:
                 roll = random.randint(1, dice)
                 if roll == 1:
-                    await client.send_message(message.channel, roll, "- critical fail!")
+                    await client.send_message(message.channel, str(roll) + " - critical fail!")
                 elif roll == dice:
-                    await client.send_message(message.channel, roll, "- CRIT!")
+                    await client.send_message(message.channel, str(roll) + " - CRIT!")
                 else:
-                    await client.send_message(message.channel, str(roll) +
-                          "!")
+                    await client.send_message(message.channel, str(roll) + "!")
         except ValueError:
             await client.send_message(message.channel, "That's not a number!")
 
@@ -229,5 +228,5 @@ async def on_message(message):
             await client.send_message(message.channel, "Outlook not so good.")
         elif roll == 20:
             await client.send_message(message.channel, "Very doubtful.")
-        
+
 client.run(config.user_token)
