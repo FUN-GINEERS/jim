@@ -50,16 +50,22 @@ async def on_member_update(before, after):
 
 @client.event
 async def on_message(message):
-    if message.server.me.nick is not None:
+    if message.server is not None and message.server.me.nick is not None:
         name = message.server.me.nick.lower()
+        uname = message.server.me.nick
     else:
         name = "jim"
+        uname = "Jim"
 
     if message.content.startswith('&ping'):
         await client.send_message(message.channel, "Pong!")
 
     elif message.content.startswith('&about'):
-        await client.send_message(message.channel, "I am Jim! A bot created specially for " + message.server.name + "!")
+        if message.server is None:
+            s = "you"
+        else:
+            s = message.server.name
+        await client.send_message(message.channel, "I am %s! A bot created specially for %s!" % (uname, s,))
 
     elif message.content.startswith("&murder"):
         await client.send_message(message.channel, "I am not capable of murder.")
@@ -166,6 +172,8 @@ async def on_message(message):
                     await client.send_message(message.channel, str(roll) + "!")
         except ValueError:
             await client.send_message(message.channel, "That's not a number!")
+        except IndexError:
+            await client.send_message(message.channel, "Invalid usage. Use format `&roll d<number>`")
 
     elif "<@423906836866007060>" in message.content:
         pass
