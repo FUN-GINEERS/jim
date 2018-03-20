@@ -10,7 +10,7 @@ client = discord.Client()
 stream = {}
 custom_commands = {}
 
-RESERVED_COMMANDS = ['ping', 'about', 'murder', 'addcom', 'delcom', 'archive', 'namechange']
+RESERVED_COMMANDS = ['ping', 'about', 'murder', 'addcom', 'delcom', 'archive', 'namechange', 'roll']
 
 
 async def get_log(channel):
