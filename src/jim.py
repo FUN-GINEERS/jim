@@ -195,7 +195,7 @@ async def on_message(message):
 
     # 8 Ball script - Kleiner
     elif message.content.lower().startswith(name) and message.content[-1] == '?':
-        roll = random.randint(1,20)
+        roll = random.randint(1,21)
         if roll == 1:
             await client.send_message(message.channel, "It is certain!")
         elif roll == 2:
@@ -236,5 +236,7 @@ async def on_message(message):
             await client.send_message(message.channel, "Outlook not so good.")
         elif roll == 20:
             await client.send_message(message.channel, "Very doubtful.")
+        elif roll == 21:
+            await client.send_message(message.channel, "<:willie_Left:387252988835790858> <:willie_head:387252451260235776> <:Willie_Right:387252999745044480>")
 
 client.run(config.user_token)
