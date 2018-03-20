@@ -147,6 +147,27 @@ async def on_message(message):
         except AttributeError:
             await client.send_message(message.channel, "I'm sorry, I cannot do that here.")
 
+    # Kleiner's awful dice rolling script
+    elif message.content.startswith("&roll"):
+        try:
+            splitmsg = dRoll.split(' ')
+            dice = int(splitmsg[1][1:])
+            if dice < 1:
+                await client.send_message(message.channel, "You can't less than a one sided die!")
+            elif dice > 1000:
+                await client.send_message(message.channel, "That's too many sides for one die.")
+            else:
+                roll = random.randint(1, dice)
+                if roll == 1:
+                    await client.send_message(message.channel, roll, "- critical fail!")
+                elif roll == dice:
+                    await client.send_message(message.channel, roll, "- CRIT!")
+                else:
+                    await client.send_message(message.channel, str(roll) +
+                          "!")
+        except ValueError:
+            await client.send_message(message.channel, "That's not a number!")
+
     elif "<@423906836866007060>" in message.content:
         pass
 
@@ -165,7 +186,7 @@ async def on_message(message):
         else:
             await client.send_message(message.channel, custom_commands[message.server.id][command])
 
-    # Forgive me if this looks awful - Kleiner
+    # 8 Ball script - Kleiner
     elif message.content.lower().startswith(name) and message.content[-1] == '?':
         roll = random.randint(1,20)
         if roll == 1:
@@ -208,17 +229,5 @@ async def on_message(message):
             await client.send_message(message.channel, "Outlook not so good.")
         elif roll == 20:
             await client.send_message(message.channel, "Very doubtful.")
-
-    elif message.content.startswith('&roll') and message.content
-        splitmsg = message.content.split(' ')
-        dice = int(splitmsg[1][1:])
-        roll = random.randint(1,dice)
-        if roll == 1:
-            await client.send_message(message.channel, "1 - critical fail!")
-        elif roll == dice:
-            await client.send_message(message.channel, dice " - CRIT!")
-        else:
-            await client.send_message(message.channel, roll "!")
-
-    
+        
 client.run(config.user_token)
