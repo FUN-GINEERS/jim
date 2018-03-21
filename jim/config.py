@@ -13,7 +13,7 @@ def _conf_parser():
         if 'JIM_CONFIG' in os.environ:
             path = os.environ.get('JIM_CONFIG')
         else:
-            path = "/etc/jim/config"
+            path = "/etc/jim.conf"
         _parser.read(path)
 
     return _parser
