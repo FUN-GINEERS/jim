@@ -160,6 +160,6 @@ async def willie(client, message):
     try:
         results = list(res.pods)[1].texts
     except AttributeError:
-        return "Not even %s knows." % (util.get_bot_name(),)
+        return "Not even %s knows." % (util.get_bot_name(message),)
 
     return '```\n' + '\n'.join(results) + '\n```'
