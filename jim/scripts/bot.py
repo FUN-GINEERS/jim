@@ -35,8 +35,12 @@ async def on_member_update(before, after):
             await client.send_message(tc, "%s is streaming! Check it out here: %s" % (after.name, after.game.url,))
         stream[after.id] = datetime.datetime.now() + datetime.timedelta(hours=1)
 
+
 @client.event
 async def on_message(message):
+    if message.author == message.server.me:
+        return
+
     if util.is_command(message):
         if util.check_permissions(message):
             response = await util.run_command(client, message)
