@@ -1,7 +1,7 @@
 import pickle
 from random import randint
 
-from jim import util, config
+from jim import util, config, minecraft
 
 
 async def _get_log(client, channel):
@@ -101,6 +101,10 @@ async def eight_ball(client, message):
     ]
 
     return responses[randint(0, len(responses)-1)]
+
+
+async def mcinfo(client, message):
+    return minecraft.get_minecraft_info()
 
 
 async def murder(client, message):
