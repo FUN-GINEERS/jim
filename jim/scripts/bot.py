@@ -24,6 +24,7 @@ async def on_ready():
     util.register_cmd("namechange", "Change my nickname on that server.", std_perms, 2, cmd_funcs.namechange)
     util.register_cmd("roll", "Roll a die.", None, 2, cmd_funcs.roll)
     util.register_cmd("ping", "Ping the bot.", None, 1, cmd_funcs.ping)
+    util.register_cmd("willie", "Ask Willie a question.", None, 2, cmd_funcs.willie)
 
 
 @client.event

@@ -1,6 +1,8 @@
 import pickle
 from random import randint
 
+import wolframalpha
+
 from jim import util, config, minecraft
 
 
@@ -144,3 +146,11 @@ async def roll(client, message):
 
 async def ping(client, message):
     return "Pong!"
+
+
+async def willie(client, message):
+    app_id = config.config_get('alpha', 'app_id')
+    alpha_client = wolframalpha.Client(app_id)
+    res = alpha_client.query(message)
+    return next(res.results).text
+
