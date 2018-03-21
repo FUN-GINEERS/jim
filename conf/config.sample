@@ -1,0 +1,8 @@
+[general]
+user_token = usertok
+command_file = /var/lib/jim/.jim/command_file.dat
+archive_dir = /var/lib/jim/archives
+
+[minecraft]
+unit = spigot.service
+address = mc.fungineers.net
