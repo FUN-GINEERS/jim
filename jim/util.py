@@ -6,7 +6,7 @@ from jim.config import config_get
 WILLIE_SHRUG = "<:willie_Left:387252988835790858> <:willie_head:387252451260235776> <:Willie_Right:387252999745044480>"
 
 registered_commands = {}
-custom_commands = None
+custom_commands = {}
 
 
 def check_permissions(message):
@@ -20,7 +20,7 @@ def check_permissions(message):
 
 
 def extract_command(message):
-    return message.content.split(' ')[1:]
+    return message.content.split(' ')[0][1:]
 
 
 def get_bot_name(message):
@@ -63,9 +63,9 @@ async def run_command(client, message):
     global WILLIE_SHRUG
     cmd = extract_command(message)
 
-    if cmd in custom_commands[message.server.id]:
+    if message.server.id in custom_commands and cmd in custom_commands[message.server.id]:
         return custom_commands[message.server.id][cmd]
     elif cmd in registered_commands:
-        await registered_commands[cmd].run(client, message)
+        return await registered_commands[cmd].run(client, message)
     else:
         return WILLIE_SHRUG

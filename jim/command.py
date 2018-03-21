@@ -31,4 +31,4 @@ class Command:
             return None
 
         else:
-            await self.func(client, message)
+            return await self.func(client, message)
