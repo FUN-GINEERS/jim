@@ -157,9 +157,7 @@ async def willie(client, message):
     alpha_client = wolframalpha.Client(app_id)
     res = alpha_client.query(message.content.split(' ', 1)[1])
 
-    results = []
-    for x in list(res.pods)[1]['subpod']:
-        results.append(x['plaintext'])
+    results = list(res.pods)[1].texts
 
     if len(results) < 1:
         return "I got no result."
