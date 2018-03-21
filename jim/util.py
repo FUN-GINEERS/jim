@@ -1,4 +1,5 @@
 import pickle
+import re
 
 from jim.command import Command
 from jim.config import config_get
@@ -6,7 +7,21 @@ from jim.config import config_get
 WILLIE_SHRUG = "<:willie_Left:387252988835790858> <:willie_head:387252451260235776> <:Willie_Right:387252999745044480>"
 
 registered_commands = {}
+registered_patterns = []
 custom_commands = None
+
+
+async def check_patterns(client, message):
+    global registered_patterns
+    name = get_bot_name(message).lower()
+
+    for x in registered_patterns:
+        a = x[0].replace("%%name%%", name)
+
+        if re.match(a, message.content, re.IGNORECASE):
+            return await x[1](client, message)
+
+    return None
 
 
 def check_permissions(message):
@@ -55,6 +70,11 @@ def register_cmd(cmd, desc, perms, numargs, func):
     global registered_commands
     c = Command(cmd, desc, perms, numargs, func)
     registered_commands[cmd] = c
+
+
+def register_pattern(pattern, func):
+    global registered_patterns
+    registered_patterns.append([pattern, func])
 
 
 async def run_command(client, message):

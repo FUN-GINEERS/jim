@@ -13,6 +13,7 @@ stream = {}
 async def on_ready():
     print('Logged in as %s (%s)' % (client.user.name, client.user.id,))
     registrations.register_cmds()
+    registrations.register_patterns()
 
 
 @client.event
@@ -27,7 +28,7 @@ async def on_member_update(before, after):
 
 @client.event
 async def on_message(message):
-    if message.author == message.server.me:
+    if message.author == message.server.me or len(message.content) < 1:
         return
 
     if util.is_command(message):
@@ -37,18 +38,9 @@ async def on_message(message):
         else:
             await client.send_message(message.channel, "You do not have permission to use this command.")
 
-    name = util.get_bot_name(message).lower()
-
-    if None:
-        pass
-
-    elif message.content.lower() == "hi " + name + "!":
-        await client.send_message(message.channel, "Hello " + message.author.mention + "!")
-
-    elif message.content.lower() == "how are you " + name + "?":
-        await client.send_message(message.channel, "I wouldn't know. I am just a robot.")
-        time.sleep(0.5)
-        await client.send_message(message.channel, "How are you, " + message.author.mention + "?")
+    res = await util.check_patterns(client, message)
+    if res is not None:
+        await client.send_message(message.channel, res)
 
 
 def main():

@@ -21,7 +21,7 @@ class Command:
         if self.numargs == 0:
             return True
 
-        if len(message.split(" ")) < self.numargs:
+        if len(message.content.split(" ")) < self.numargs:
             return False
         else:
             return True
@@ -31,4 +31,7 @@ class Command:
             return None
 
         else:
-            return await self.func(client, message)
+            if self.check_args(message):
+                return await self.func(client, message)
+            else:
+                return "Command requires %d parameters." % (self.numargs-1,)

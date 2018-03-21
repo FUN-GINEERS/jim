@@ -105,6 +105,10 @@ async def eight_ball(client, message):
     return responses[randint(0, len(responses)-1)]
 
 
+async def hello_jim(client, message):
+    return "Hello %s!" % (message.author.mention,)
+
+
 async def mcinfo(client, message):
     return minecraft.get_minecraft_info()
 
@@ -151,6 +155,13 @@ async def ping(client, message):
 async def willie(client, message):
     app_id = config.config_get('alpha', 'app_id')
     alpha_client = wolframalpha.Client(app_id)
-    res = alpha_client.query(message)
-    return next(res.results).text
+    res = alpha_client.query(message.content.split(' ', 1)[1])
 
+    results = []
+    for x in list(res.pods)[1]['subpod']:
+        results.append(x['plaintext'])
+
+    if len(results) < 1:
+        return "I got no result."
+    else:
+        return '```\n' + '\n'.join(results) + '\n```'

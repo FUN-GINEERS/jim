@@ -14,3 +14,8 @@ def register_cmds():
     util.register_cmd("roll", "Roll a die.", None, 2, cmd_funcs.roll)
     util.register_cmd("ping", "Ping the bot.", None, 1, cmd_funcs.ping)
     util.register_cmd("willie", "Ask Willie a question.", None, 2, cmd_funcs.willie)
+
+
+def register_patterns():
+    util.register_pattern(r'%%name%%.*\?', cmd_funcs.eight_ball)
+    util.register_pattern(r'hi %%name%%!', cmd_funcs.hello_jim)
