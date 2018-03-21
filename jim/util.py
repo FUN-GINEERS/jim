@@ -6,7 +6,7 @@ from jim.config import config_get
 WILLIE_SHRUG = "<:willie_Left:387252988835790858> <:willie_head:387252451260235776> <:Willie_Right:387252999745044480>"
 
 registered_commands = {}
-custom_commands = {}
+custom_commands = None
 
 
 def check_permissions(message):
