@@ -6,3 +6,6 @@ archive_dir = /var/lib/jim/archives
 [minecraft]
 unit = spigot.service
 address = mc.fungineers.net
+
+[alpha]
+app_id = id
