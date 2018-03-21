@@ -55,4 +55,10 @@ async def on_message(message):
         time.sleep(0.5)
         await client.send_message(message.channel, "How are you, " + message.author.mention + "?")
 
-client.run(config.config_get("general", "user_token"))
+
+def main():
+    client.run(config.config_get("general", "user_token"))
+
+
+if __name__ == "__main__":
+    main()
