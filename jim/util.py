@@ -59,12 +59,12 @@ def register_cmd(cmd, desc, perms, numargs, func):
 
 async def run_command(client, message):
     global registered_commands
-    global custom_commands
     global WILLIE_SHRUG
     cmd = extract_command(message)
+    ccmds = get_custom_commands()
 
-    if message.server.id in custom_commands and cmd in custom_commands[message.server.id]:
-        return custom_commands[message.server.id][cmd]
+    if message.server.id in ccmds and cmd in ccmds[message.server.id]:
+        return ccmds[message.server.id][cmd]
     elif cmd in registered_commands:
         return await registered_commands[cmd].run(client, message)
     else:
