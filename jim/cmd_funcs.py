@@ -157,9 +157,9 @@ async def willie(client, message):
     alpha_client = wolframalpha.Client(app_id)
     res = alpha_client.query(message.content.split(' ', 1)[1])
 
-    results = list(res.pods)[1].texts
+    try:
+        results = list(res.pods)[1].texts
+    except AttributeError:
+        return "Not even %s knows." % (util.get_bot_name(),)
 
-    if len(results) < 1:
-        return "I got no result."
-    else:
-        return '```\n' + '\n'.join(results) + '\n```'
+    return '```\n' + '\n'.join(results) + '\n```'
