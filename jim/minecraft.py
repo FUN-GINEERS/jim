@@ -26,7 +26,7 @@ def get_minecraft_info():
     local_db = alpm_handle.get_localdb()
     mc_pkg = local_db.get_pkg(config_get("minecraft", "pkgname"))
     ver = mc_pkg.version
-    sanitized_ver = ''.join(re.findall(r'(\d+\.)(\d+\.)?(\*|\d*)', ver))
+    sanitized_ver = ''.join(re.findall(r'(\d+\.)(\d+\.)?(\*|\d*)', ver)[0])
 
 
     if active_state == 'active':
