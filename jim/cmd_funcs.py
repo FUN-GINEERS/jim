@@ -152,13 +152,16 @@ async def ping(client, message):
     return "Pong!"
 
 
-async def willie(client, message):
+async def wolfram(client, message):
     app_id = config.config_get('alpha', 'app_id')
     alpha_client = wolframalpha.Client(app_id)
     res = alpha_client.query(message.content.split(' ', 1)[1])
 
+    results = []
     try:
-        results = list(res.pods)[1].texts
+        for x in res.results:
+            for y in x.subpod:
+                results.append(y.plaintext)
     except AttributeError:
         return "Not even %s knows." % (util.get_bot_name(message),)
 
