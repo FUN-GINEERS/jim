@@ -4,8 +4,13 @@ command_file = /var/lib/jim/.jim/command_file.dat
 archive_dir = /var/lib/jim/archives
 
 [minecraft]
+pkgname = spigot
 unit = spigot.service
 address = mc.fungineers.net
 
 [alpha]
 app_id = id
+
+[alpm]
+rootdir = /
+dbdir = /var/lib/pacman
