@@ -11,7 +11,7 @@ stream = {}
 @client.event
 async def on_ready():
     print('Logged in as %s (%s)' % (client.user.name, client.user.id,))
-    await client.change_status("&help", False)
+    await client.change_status(discord.Game(name="&help"), False)
     registrations.register_cmds()
     registrations.register_patterns()
 
