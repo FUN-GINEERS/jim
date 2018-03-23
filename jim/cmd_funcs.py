@@ -109,6 +109,26 @@ async def hello_jim(client, message):
     return "Hello %s!" % (message.author.mention,)
 
 
+async def help(client, message):
+    ret = "```\n"
+    ret += "I am Jim! "
+
+    if util.get_bot_name(message).lower() != "jim":
+        ret += "You may know me by the name %s and you requested me to give you " \
+               "information on how to use my functions.\n" \
+               % (util.get_bot_name(message),)
+    else:
+        ret += "You requested me to give you information on how to use my functions.\n"
+
+    ret += "Commands:\n"
+    for k, v in util.registered_commands.items():
+        ret += "    &%s: %s (takes %d parameter%s)\n" % (k, v.desc, v.numargs, '' if v.numargs == 1 else 's')
+
+    ret += "```"
+
+    return ret
+
+
 async def mcinfo(client, message):
     return minecraft.get_minecraft_info()
 

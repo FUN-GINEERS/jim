@@ -1,10 +1,11 @@
 class Command:
-    def __init__(self, name='', desc='', perms=None, numargs=1, func=None):
+    def __init__(self, name='', desc='', perms=None, numargs=1, func=None, pm=False):
         self.name = name
         self.desc = desc
         self.perms = perms
         self.numargs = numargs
         self.func = func
+        self.pm = pm
 
     def __str__(self):
         return self.name

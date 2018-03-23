@@ -33,7 +33,10 @@ async def on_message(message):
     if util.is_command(message):
         if util.check_permissions(message):
             response = await util.run_command(client, message)
-            await client.send_message(message.channel, response)
+            if util.send_to_pm(message):
+                await client.send_message(message.author, response)
+            else:
+                await client.send_message(message.channel, response)
         else:
             await client.send_message(message.channel, "You do not have permission to use this command.")
 

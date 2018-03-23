@@ -63,18 +63,23 @@ def get_custom_commands():
 
 
 def is_command(message):
-    return True if message.content[0] == '&' else False
+    return message.content[0] == '&'
 
 
-def register_cmd(cmd, desc, perms, numargs, func):
+def register_cmd(cmd, desc, perms, numargs, func, pm):
     global registered_commands
-    c = Command(cmd, desc, perms, numargs, func)
+    c = Command(cmd, desc, perms, numargs, func, pm)
     registered_commands[cmd] = c
 
 
 def register_pattern(pattern, func):
     global registered_patterns
     registered_patterns.append([pattern, func])
+
+
+def send_to_pm(message):
+    cmd = extract_command(message)
+    return registered_commands[cmd].pm
 
 
 async def run_command(client, message):
