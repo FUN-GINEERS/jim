@@ -122,7 +122,7 @@ async def help(client, message):
 
     ret += "Commands:\n"
     for k, v in util.registered_commands.items():
-        ret += "    &%s: %s (takes %d parameter%s)\n" % (k, v.desc, v.numargs, '' if v.numargs == 1 else 's')
+        ret += "    &%s: %s (takes %d parameter%s)\n" % (k, v.desc, v.numargs - 1, '' if v.numargs - 1 == 1 else 's')
 
     ret += "```"
 
