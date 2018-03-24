@@ -2,7 +2,8 @@ import discord
 import datetime
 
 import jim.config as config
-from jim import registrations, util
+from jim import registrations
+from jim.util import util
 
 client = discord.Client()
 stream = {}

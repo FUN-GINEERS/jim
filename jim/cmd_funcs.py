@@ -3,7 +3,8 @@ from random import randint
 
 import wolframalpha
 
-from jim import util, config, minecraft
+from jim import config, minecraft
+from jim.util import util
 
 
 async def _get_log(client, channel):

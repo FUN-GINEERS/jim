@@ -1,4 +1,5 @@
-from jim import cmd_funcs, util
+from jim import cmd_funcs
+from jim.util import util
 
 
 def register_cmds():
