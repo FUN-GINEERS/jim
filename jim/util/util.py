@@ -80,7 +80,11 @@ def register_pattern(pattern, func):
 def send_to_pm(message):
     global registered_commands
     cmd = extract_command(message)
-    return registered_commands[cmd].pm if cmd in registered_commands else False
+
+    if cmd in registered_commands:
+        return registered_commands[cmd].pm
+    else:
+        return False
 
 
 async def run_command(client, message):
