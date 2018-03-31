@@ -3,7 +3,7 @@ from jim.util import util
 
 
 def register_cmds():
-    std_perms = ['Administrator', 'Moderator', 'Fungineer+']
+    std_perms = ['Administrator', 'Moderator', 'Botgineer+']
     util.register_cmd("8ball", "Ask the magic 8 ball.", None, 2, cmd_funcs.eight_ball, False)
     util.register_cmd("addcom", "Adds a custom command.", std_perms, 3, cmd_funcs.addcom, False)
     util.register_cmd("about", "Gets general bot information.", None, 1, cmd_funcs.about, False)
