@@ -1,12 +1,28 @@
-import pyalpm
 import datetime
 import re
-from dbus import SystemBus, Interface
+
+try:
+    from dbus import SystemBus, Interface
+    dbus_imported = True
+except ImportError:
+    dbus_imported = False
+
+try:
+    import pyalpm
+    alpm_imported = True
+except ImportError:
+    alpm_imported = False
 
 from jim.config import config_get
 
 
 def get_minecraft_info():
+    if not alpm_imported or not dbus_imported:
+        out = "Minecraft info not available due to modules:"
+        out += "" if alpm_imported else " pyalpm"
+        out += "" if dbus_imported else " dbus"
+        return out
+
     bus = SystemBus()
     systemd = bus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
     manager = Interface(systemd, dbus_interface='org.freedesktop.systemd1.Manager')
