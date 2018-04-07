@@ -28,7 +28,6 @@ def get_minecraft_info():
     ver = mc_pkg.version
     sanitized_ver = ''.join(re.findall(r'(\d+\.)(\d+\.)?(\*|\d*)', ver)[0])
 
-
     if active_state == 'active':
         out = "Minecraft server is up!\nUptime: %s\nVersion: %s\nAddress: %s" % \
               (datetime.datetime.now() - datetime.datetime.fromtimestamp(int(active_time/1000000)),
