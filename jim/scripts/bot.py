@@ -10,7 +10,7 @@ client = discord.Client()
 @client.event
 async def on_ready():
     print('Logged in as %s (%s)' % (client.user.name, client.user.id,))
-    await client.change_status(discord.Game(name="&help"), False)
+    await client.change_presence(discord.Game(name="&help"), None, False)
     registrations.register_cmds()
     registrations.register_patterns()
 
