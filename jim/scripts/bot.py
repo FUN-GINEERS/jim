@@ -1,12 +1,10 @@
 import discord
-import datetime
 
 import jim.config as config
 from jim import registrations
-from jim.util import util
+from jim.util import util, twitch
 
 client = discord.Client()
-stream = {}
 
 
 @client.event
@@ -18,14 +16,8 @@ async def on_ready():
 
 
 @client.event
-async def on_member_update(before, after):
-    # Maybe later break this off.
-    if after.game is not None and after.game.type == 1:
-        if after.id not in stream or datetime.datetime.now() > stream[after.id]:
-            tc = client.get_channel('348820905688039444')
-            await client.send_message(tc, "%s is streaming! %s. Check it out here: %s" %
-                                      (after.name, after.game.name, after.game.url,))
-        stream[after.id] = datetime.datetime.now() + datetime.timedelta(hours=1)
+async def on_member_update(_, after):
+    await twitch.notify(client, after)
 
 
 @client.event
