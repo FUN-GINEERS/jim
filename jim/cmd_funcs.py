@@ -10,12 +10,34 @@ from jim.util import util
 async def _get_log(client, channel):
     logs = client.logs_from(channel, limit=2 ** 32)
     log = []
+    t = int(time.time())
     async for m in logs:
-        log.append("%s: <%s> %s" % (m.timestamp, m.author, m.content,))
+        attments = []
+        for a in m.attachments:
+            print("[INFO] Pulling file from <" + a["url"] + ">")
+            savepath = "archives/" + channel.server.name + "/" + channel.name + "/" + m.id + "/" + str(t) + "/"
+            attments.append(savepath + a["filename"])
 
-    with open(channel.name + ".txt", "w") as f:
-        for x in log[-1::-1]:
-            f.write(x + "\n")
+            try:
+                os.makedirs(savepath, mode=493) # this mode is 0755
+            except FileExistsError:
+                pass
+
+            req = urllib.request.Request(a["url"], data=None, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0"})
+            with open(savepath + a["filename"], "wb") as f:
+                f.write(urllib.request.urlopen(req).read())
+
+        output = {}
+        output["timestamp"] = m.timestamp.timestamp()
+        output["name"] = m.author.name
+        output["uid"] = m.author.id
+        output["id"] = m.id
+        output["message"] = m.content
+        output["attachments"] = attments
+        log.append(output)
+
+    with open(channel.server.name + "-" + channel.name + ".json", "w") as f:
+        json.dump(log, f)
 
 
 async def addcom(client, message):
