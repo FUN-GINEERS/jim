@@ -3,7 +3,8 @@ import re
 
 from jim.command import Command
 from jim.config import config_get
-from jim.util.DB import query
+from jim.util.DB import query, exec
+from jim.util import util
 
 WILLIE_SHRUG = "<:willie_Left:387252988835790858> <:willie_head:387252451260235776> <:Willie_Right:387252999745044480>"
 
@@ -13,6 +14,13 @@ MODERATOR_PERM = 2
 registered_commands = {}
 registered_patterns = []
 custom_commands = None
+
+
+def check_server_in_db(message):
+    res = query("SELECT id FROM servers WHERE id = '%s'" % (message.server.id,))
+
+    if len(res) == 0:
+        exec("INSERT INTO servers VALUES ('%s', '&')" % (message.server.id,))
 
 
 async def check_patterns(client, message):
@@ -67,6 +75,7 @@ def get_custom_commands():
 
 
 def is_command(message):
+    util.check_server_in_db(message)
     res = query("SELECT prefix FROM servers WHERE id = '%s'" % (message.server.id,))
     return message.content[0] == res[0][0]
 

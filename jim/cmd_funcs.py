@@ -7,7 +7,7 @@ import urllib.request
 import wolframalpha
 
 from jim import config, minecraft
-from jim.util import util
+from jim.util import util, DB
 
 
 async def _get_log(client, channel):
@@ -197,6 +197,12 @@ async def roll(client, message):
 
 async def ping(client, message):
     return "Pong!"
+
+
+async def prefix(client, message):
+    splitmsg = message.content.split(" ")
+    DB.exec("UPDATE servers SET prefix = '%s' WHERE id = '%s'" % (splitmsg[1][0], message.server.id,))
+    return "Updated prefix to %s" % (splitmsg[1][0],)
 
 
 async def wolfram(client, message):

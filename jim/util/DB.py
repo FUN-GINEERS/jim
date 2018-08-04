@@ -30,3 +30,10 @@ def query(q):
     cur = CONN.cursor()
     cur.execute(q)
     return cur.fetchall()
+
+
+def exec(q):
+    connect()
+    cur = CONN.cursor()
+    cur.execute(q)
+    CONN.commit()

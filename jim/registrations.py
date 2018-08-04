@@ -14,6 +14,7 @@ def register_cmds():
     register_cmd("namechange", "Change my nickname on that server.", ADMINISTRATOR_PERM, 2, cmd_funcs.namechange, False)
     register_cmd("roll", "Roll a die.", None, 2, cmd_funcs.roll, False)
     register_cmd("ping", "Ping the bot.", None, 1, cmd_funcs.ping, False)
+    register_cmd("prefix", "Change command prefix", ADMINISTRATOR_PERM, 1, cmd_funcs.prefix, False)
     register_cmd("willie", "Ask Willie a question.", None, 2, cmd_funcs.wolfram, False)
 
 
