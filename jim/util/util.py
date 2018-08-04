@@ -46,7 +46,7 @@ def get_bot_name(message):
     if message.server is not None and message.server.me.nick is not None:
         name = message.server.me.nick
     else:
-        name = "Jim"
+        name = message.server.me.name
 
     return name
 
