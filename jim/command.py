@@ -13,7 +13,6 @@ class Command:
         return self.name
 
     def check_permissions(self, member):
-        test = list(map(lambda x: x.id, member.roles))
         if self.perms is not None:
             if (self.perms & util.MODERATOR_PERM) > 0:
                 res = DB.query("SELECT * FROM perms WHERE server_id = '%s' AND perm_type = 2" % (member.server.id,))
