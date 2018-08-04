@@ -1,3 +1,5 @@
+from jim.util import DB, util
+
 class Command:
     def __init__(self, name='', desc='', perms=None, numargs=1, func=None, pm=False):
         self.name = name
@@ -11,12 +13,33 @@ class Command:
         return self.name
 
     def check_permissions(self, member):
-        if self.perms is None or len(self.perms) == 0:
-            return True
-        elif not any(x in self.perms for x in list(map(lambda x: x.name, member.roles))):
-            return False
-        else:
-            return True
+        test = list(map(lambda x: x.id, member.roles))
+        if self.perms is not None:
+            if (self.perms & util.MODERATOR_PERM) > 0:
+                res = DB.query("SELECT * FROM perms WHERE server_id = '%s' AND perm_type = 2" % (member.server.id,))
+
+                for row in res:
+                    if not row[3] and row[2] in list(map(lambda x: x.id, member.roles)):
+                        return True
+
+                    if row[3] and row[2] == member.id:
+                        return True
+
+                    return False
+
+            if (self.perms & util.ADMINISTRATOR_PERM) > 0:
+                res = DB.query("SELECT * FROM perms WHERE server_id = '%s' AND perm_type = 1" % (member.server.id,))
+
+                for row in res:
+                    if not row[3] and row[2] in list(map(lambda x: x.id, member.roles)):
+                        return True
+
+                    if row[3] and row[2] == member.id:
+                        return True
+
+                    return False
+
+        return True
 
     def check_args(self, message):
         if self.numargs == 0:
