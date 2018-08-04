@@ -1,8 +1,7 @@
 import json
-import os
+from os import path, makedirs
 import pickle
 from random import randint
-import time
 import urllib.request
 
 import wolframalpha
@@ -14,22 +13,22 @@ from jim.util import util
 async def _get_log(client, channel):
     logs = client.logs_from(channel, limit=2 ** 32)
     log = []
-    t = int(time.time())
     async for m in logs:
         attments = []
         for a in m.attachments:
             print("[INFO] Pulling file from <" + a["url"] + ">")
-            savepath = "archives/" + channel.server.name + "/" + channel.name + "/" + m.id + "/" + str(t) + "/"
+            savepath = "archives/" + channel.server.name + "/" + channel.name + "/" + m.id + "/"
             attments.append(savepath + a["filename"])
 
             try:
-                os.makedirs(savepath, mode=493) # this mode is 0755
+                makedirs(savepath, mode=493) # this mode is 0755
             except FileExistsError:
                 pass
 
-            req = urllib.request.Request(a["url"], data=None, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0"})
-            with open(savepath + a["filename"], "wb") as f:
-                f.write(urllib.request.urlopen(req).read())
+            if not path.exists(savepath + a["filename"]):
+                req = urllib.request.Request(a["url"], data=None, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0"})
+                with open(savepath + a["filename"], "wb") as f:
+                    f.write(urllib.request.urlopen(req).read())
 
         output = {
             "timestamp": m.timestamp.timestamp(),
