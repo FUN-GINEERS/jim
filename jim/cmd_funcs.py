@@ -31,13 +31,14 @@ async def _get_log(client, channel):
             with open(savepath + a["filename"], "wb") as f:
                 f.write(urllib.request.urlopen(req).read())
 
-        output = {}
-        output["timestamp"] = m.timestamp.timestamp()
-        output["name"] = m.author.name
-        output["uid"] = m.author.id
-        output["id"] = m.id
-        output["message"] = m.content
-        output["attachments"] = attments
+        output = {
+            "timestamp": m.timestamp.timestamp(),
+            "name": m.author.name,
+            "uid": m.author.id,
+            "id": m.id,
+            "message": m.clean_content,
+            "attachments": attments,
+        }
         log.append(output)
 
     with open(channel.server.name + "-" + channel.name + ".json", "w") as f:
