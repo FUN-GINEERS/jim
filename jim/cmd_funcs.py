@@ -1,5 +1,9 @@
+import json
+import os
 import pickle
 from random import randint
+import time
+import urllib.request
 
 import wolframalpha
 
