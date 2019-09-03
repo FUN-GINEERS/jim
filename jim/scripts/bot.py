@@ -2,7 +2,7 @@ import discord
 
 import jim.config as config
 from jim import registrations
-from jim.util import util, twitch
+from jim.util import util
 
 client = discord.Client()
 
@@ -14,9 +14,9 @@ async def on_ready():
     registrations.register_patterns()
 
 
-@client.event
-async def on_member_update(_, after):
-    await twitch.notify(client, after)
+# @client.event
+# async def on_member_update(_, after):
+#     await twitch.notify(client, after)
 
 
 @client.event
