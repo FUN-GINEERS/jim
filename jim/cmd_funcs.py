@@ -17,11 +17,11 @@ async def _get_log(client, channel):
         attments = []
         for a in m.attachments:
             print("[INFO] Pulling file from <" + a["url"] + ">")
-            savepath = "archives/" + channel.server.name + "/" + channel.name + "/" + m.id + "/"
+            savepath = "archives/" + channel.guild.name + "/" + channel.name + "/" + m.id + "/"
             attments.append(savepath + a["filename"])
 
             try:
-                makedirs(savepath, mode=493) # this mode is 0755
+                makedirs(savepath, mode=493)  # this mode is 0755
             except FileExistsError:
                 pass
 
@@ -40,38 +40,74 @@ async def _get_log(client, channel):
         }
         log.append(output)
 
-    with open(channel.server.name + "-" + channel.name + ".json", "w") as f:
+    with open(channel.guild.name + "-" + channel.name + ".json", "w") as f:
         json.dump(log, f)
 
 
+async def addadmin(client, message):
+    splitmsg = message.content.split(" ")
+
+    if message.guild is None:
+        return "Command must be run on a server."
+
+    for x in message.mentions:
+        DB.exec("INSERT INTO perms (server_id, perm_type, role_id, is_user) "
+                "VALUES (%s, %d, %s, TRUE)" % (message.guild.id, util.ADMINISTRATOR_PERM, x.id))
+
+    for x in message.role_mentions:
+        DB.exec("INSERT INTO perms (server_id, perm_type, role_id, is_user) "
+                "VALUES (%s, %s, %s, FALSE)" % (message.guild.id, util.ADMINISTRATOR_PERM, x.id))
+
+    return "Granted permission to use administrator bot commands..."
+
+
 async def addcom(client, message):
+    if message.guild is None:
+        return "Command must be ran on a server..."
+
     splitmsg = message.content.split(" ", 2)
     reserved = util.get_command_list()
-    custom_commands = util.get_custom_commands()
 
     if len(splitmsg) < 3:
         return "Invalid usage. Use format `&addcom command Response`"
 
-    if message.server is not None and message.server.id not in custom_commands:
-        custom_commands[message.server.id] = {}
+    if splitmsg[1] in reserved:
+        return "Cannot add a reserved command..."
 
-    if splitmsg[1].lower() in custom_commands[message.server.id] or splitmsg[1].lower() in reserved:
-        return "Command already exists."
-    else:
-        custom_commands[message.server.id][splitmsg[1].lower()] = splitmsg[2]
-        with open(config.config_get("general", "command_file"), "wb") as f:
-            pickle.dump(custom_commands, f)
+    res = DB.query("SELECT command FROM commands WHERE server_id = '%s' AND command = '%s'" %
+                   (message.guild.id, splitmsg[1],))
 
-        return "Command added!"
+    if len(res) > 0:
+        return "Command already exists..."
+
+    DB.exec("INSERT INTO commands (server_id, command, response) "
+            "VALUES ('%s', '%s', '%s')" % (message.guild.id, splitmsg[1], splitmsg[2],))
+
+    return "Command added..."
+
+
+async def addmod(client, message):
+    if message.guild is None:
+        return "Command must be run on a server."
+
+    for x in message.mentions:
+        DB.exec("INSERT INTO perms (server_id, perm_type, role_id, is_user) "
+                "VALUES ('%s', %d, '%s', TRUE)" % (message.guild.id, util.MODERATOR_PERM, x.id))
+
+    for x in message.role_mentions:
+        DB.exec("INSERT INTO perms (server_id, perm_type, role_id, is_user) "
+                "VALUES ('%s', %s, '%s', FALSE)" % (message.guild.id, util.MODERATOR_PERM, x.id))
+
+    return "Granted permission to use moderator bot commands..."
 
 
 async def about(client, message):
     name = util.get_bot_name(message)
 
-    if message.server is None:
+    if message.guild is None:
         s = "you"
     else:
-        s = message.server.name
+        s = message.guild.name
 
     return "I am %s! A bot created by markzz specially for %s!" % (name, s,)
 
@@ -86,22 +122,34 @@ async def archive(client, message):
         return "I'm sorry, I could not do it..."
 
 
-async def delcom(client, message):
+async def deladmin(client, message):
     splitmsg = message.content.split(" ")
-    reserved = util.get_command_list()
-    custom_commands = util.get_custom_commands()
 
-    if splitmsg[1].lower() in reserved:
-        return "I cannot remove that command."
-    else:
-        if splitmsg[1].lower() not in custom_commands[message.server.id]:
-            return "I cannot remove a command that doesn't exist."
-        else:
-            del custom_commands[message.server.id][splitmsg[1].lower()]
-            with open(config.config_get("general", "command_file"), "wb") as f:
-                pickle.dump(custom_commands, f)
+    if message.guild is None:
+        return "Command must be run on a server."
 
-            return "Command deleted."
+    for x in message.mentions + message.role_mentions:
+        DB.exec("DELETE FROM perms WHERE server_id = '%s' AND role_id = '%d'" %
+                (message.guild.id, x.id))
+
+    return "Revoked permission to use administrator bot commands..."
+
+
+async def delcom(client, message):
+    if message.guild is None:
+        return "Message must be run on server."
+
+    splitmsg = message.content.split(" ")
+
+    DB.exec("DELETE FROM commands WHERE server_id = '%d' AND command = '%s'" %
+            (message.guild.id, splitmsg[1],))
+
+    return "Deleted command..."
+
+
+async def delmod(client, message):
+    _ = await deladmin(client, message)
+    return "Revoked permission to use moderator bot commands..."
 
 
 async def eight_ball(client, message):
@@ -169,7 +217,7 @@ async def namechange(client, message):
     if len(splitmsg) != 2:
         return "Invalid usage. Use format `&namechange new_name`"
     else:
-        await client.change_nickname(message.server.me, splitmsg[1])
+        await message.guild.me.edit(nick=splitmsg[1])
         return "I am now known as " + splitmsg[1] + " here."
 
 
@@ -201,7 +249,10 @@ async def ping(client, message):
 
 async def prefix(client, message):
     splitmsg = message.content.split(" ")
-    DB.exec("UPDATE servers SET prefix = '%s' WHERE id = '%s'" % (splitmsg[1][0], message.server.id,))
+    if len(splitmsg) < 2:
+        return "You need to provide a prefix..."
+
+    DB.exec("UPDATE servers SET prefix = '%s' WHERE id = '%s'" % (splitmsg[1][0], message.guild.id,))
     return "Updated prefix to %s" % (splitmsg[1][0],)
 
 

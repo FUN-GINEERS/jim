@@ -13,14 +13,18 @@ MODERATOR_PERM = 2
 
 registered_commands = {}
 registered_patterns = []
-custom_commands = None
 
 
 def check_server_in_db(message):
-    res = query("SELECT id FROM servers WHERE id = '%s'" % (message.server.id,))
+    if message.guild is None:
+        return False
+
+    res = query("SELECT id FROM servers WHERE id = '%s'" % (message.guild.id,))
 
     if len(res) == 0:
-        exec("INSERT INTO servers VALUES ('%s', '&')" % (message.server.id,))
+        exec("INSERT INTO servers VALUES ('%s', '!')" % (message.guild.id,))
+
+    return True
 
 
 async def check_patterns(client, message):
@@ -51,10 +55,12 @@ def extract_command(message):
 
 
 def get_bot_name(message):
-    if message.server is not None and message.server.me.nick is not None:
-        name = message.server.me.nick
+    if message.guild is not None and message.guild.me.nick is not None:
+        name = message.guild.me.nick
+    elif message.guild is None:
+        name = message.channel.me.name
     else:
-        name = message.server.me.name
+        name = message.guild.me.name
 
     return name
 
@@ -64,20 +70,24 @@ def get_command_list():
     return list(registered_commands.keys())
 
 
-def get_custom_commands():
-    global custom_commands
+def custom_command(message):
+    res = query("SELECT response FROM commands WHERE server_id = '%s' AND command = '%s'" %
+                (message.guild.id, message.content.split(" ")[0][1:]))
 
-    if custom_commands is None:
-        with open(config_get("general", "command_file"), "rb") as f:
-            custom_commands = pickle.load(f)
+    if len(res) == 0:
+        return None
 
-    return custom_commands
+    return res[0][0]
 
 
 def is_command(message):
-    util.check_server_in_db(message)
-    res = query("SELECT prefix FROM servers WHERE id = '%s'" % (message.server.id,))
-    return message.content[0] == res[0][0]
+    is_server = util.check_server_in_db(message)
+
+    if is_server:
+        res = query("SELECT prefix FROM servers WHERE id = '%s'" % (message.guild.id,))
+        return message.content[0] == res[0][0]
+    else:
+        return message.content[0] == '!'
 
 
 def register_cmd(cmd, desc, perms, numargs, func, pm):
@@ -105,10 +115,10 @@ async def run_command(client, message):
     global registered_commands
     global WILLIE_SHRUG
     cmd = extract_command(message)
-    ccmds = get_custom_commands()
+    res = custom_command(message)
 
-    if message.server.id in ccmds and cmd in ccmds[message.server.id]:
-        return ccmds[message.server.id][cmd]
+    if res is not None:
+        return res
     elif cmd in registered_commands:
         return await registered_commands[cmd].run(client, message)
     else:

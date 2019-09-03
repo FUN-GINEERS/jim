@@ -1,4 +1,7 @@
+import discord
+
 from jim.util import DB, util
+
 
 class Command:
     def __init__(self, name='', desc='', perms=None, numargs=1, func=None, pm=False):
@@ -13,30 +16,32 @@ class Command:
         return self.name
 
     def check_permissions(self, member):
-        if self.perms is not None:
+        if isinstance(member, discord.Member) and self.perms is not None:
             if (self.perms & util.MODERATOR_PERM) > 0:
-                res = DB.query("SELECT * FROM perms WHERE server_id = '%s' AND perm_type = 2" % (member.server.id,))
+                res = DB.query("SELECT * FROM perms WHERE server_id = '%d' AND perm_type = 2" % (member.guild.id,))
 
                 for row in res:
-                    if not row[3] and row[2] in list(map(lambda x: x.id, member.roles)):
+                    if not row[3] and row[2] in list(map(lambda x: str(x.id), member.roles)):
                         return True
 
-                    if row[3] and row[2] == member.id:
+                    if row[3] and row[2] == str(member.id):
                         return True
-
-                    return False
 
             if (self.perms & util.ADMINISTRATOR_PERM) > 0:
-                res = DB.query("SELECT * FROM perms WHERE server_id = '%s' AND perm_type = 1" % (member.server.id,))
+                res = DB.query("SELECT * FROM perms WHERE server_id = '%d' AND perm_type = 1" % (member.guild.id,))
 
                 for row in res:
-                    if not row[3] and row[2] in list(map(lambda x: x.id, member.roles)):
+                    if not row[3] and row[2] in list(map(lambda x: str(x.id), member.roles)):
                         return True
 
-                    if row[3] and row[2] == member.id:
+                    if row[3] and row[2] == str(member.id):
                         return True
 
-                    return False
+                if len(res) == 0:
+                    # prevents lock out
+                    return True
+
+            return False
 
         return True
 
