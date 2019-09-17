@@ -1,3 +1,15 @@
+# A quick note about this function:
+#
+# This function makes a couple of assumptions for the primary Jim's instance.
+# This includes that the host is Arch Linux, with pyalpm and dbus python3
+# modules installed. Not having these installed will not break the bot,
+# but will make the mcinfo command not actually do anything but print out
+# that it's missing a module.
+#
+# I am willing to accept patches that support systems that aren't pacman
+# or systemd/dbus based, but note that it must not break the functionality
+# here in any way.
+
 import datetime
 import re
 
