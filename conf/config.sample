@@ -3,6 +3,13 @@ user_token = usertok
 command_file = /var/lib/jim/.jim/command_file.dat
 archive_dir = /var/lib/jim/archives
 
+[db]
+backend = postgres
+host = localhost
+name = jim
+username = jim
+password = jim
+
 [minecraft]
 pkgname = spigot
 unit = spigot.service
