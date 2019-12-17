@@ -20,3 +20,6 @@ app_id = id
 [alpm]
 rootdir = /
 dbdir = /var/lib/pacman
+
+[story]
+books_dir = books
